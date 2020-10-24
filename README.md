@@ -1,4 +1,4 @@
-**Acticate the virtual environment**
+**Activate the virtual environment**
 """
 blockchain-env/Scripts/activate
 """
