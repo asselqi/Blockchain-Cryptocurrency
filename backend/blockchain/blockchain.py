@@ -1,4 +1,6 @@
-from block import Block
+from backend.blockchain.block import Block
+
+
 class Blockchain:
     """
     Blovkchain: a public ledger of transaction.
