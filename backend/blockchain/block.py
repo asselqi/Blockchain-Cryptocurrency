@@ -52,7 +52,7 @@ class Block:
         while hex_to_binary(hash)[0:difficulty] != '0' * difficulty:
             nonce += 1
             timestamp = time.time_ns()
-            difficulty = Block.adjust_difficulty(last_block, timestamp)
+            difficulty = Block. (last_block, timestamp)
             hash = crypto_hash(timestamp, last_hash, data, difficulty, nonce)
         return Block(timestamp, last_hash, hash, data, difficulty, nonce)
 
@@ -83,10 +83,36 @@ class Block:
         if (last_block.difficulty - 1) > 0:
             return last_block.difficulty - 1
         return 1
+    
+    @staticmethod
+    def is_valid_block(last_block, block):
+        """
+        Validate block by enforcing the following rules:
+            (-) proper last_hash reference
+            (-) must meet proof of work requirement
+            (-) the difficulty must adjust by 1 at most
+            (-) the hash must be a valid combination of the block fields 
+        """
+        if block.last_hash != last_block.hash:
+            raise Exception('The block last_hash must be correct')
+        if hex_to_binary(block.hash)[0:block.difficulty] != '0' * block.difficulty:
+            raise Exception('The proof of work requirement was not met')
+        if abs(last_block.difficulty - block.difficulty) > 1:
+            raise Exception('The block difficulty must only adjust by 1')
+        re_hash = crypto_hash(block.timestamp, block.last_hash, block.data, block.difficulty, block.nonce)
+        if re_hash != block.hash:
+            raise Exception('The block hash is not valid')
+
 
 def main():
     genesis_block = Block.genesis()
-    block = Block.mine_block(genesis_block, 'foo')
+    bad_block = Block.mine_block(genesis_block, 'foo')
+    bad_block.last_hash = 'evil hash mother fucker'
+    try:
+        Block.is_valid_block(genesis_block, bad_block)
+    except Exception as e:
+        print(f'is valid block: {e}')
+    
     print(block)
 
 if __name__ == '__main__':
