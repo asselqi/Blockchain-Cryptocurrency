@@ -38,6 +38,11 @@ class Block:
             f'nonce: {self.nonce})'
         )
 
+    def __eq__(self, other):
+        if isinstance(other, self.__class__):
+            return self.__dict__ == other.__dict__
+        return False
+        
     @staticmethod
     def mine_block(last_block, data):
         """
@@ -52,7 +57,7 @@ class Block:
         while hex_to_binary(hash)[0:difficulty] != '0' * difficulty:
             nonce += 1
             timestamp = time.time_ns()
-            difficulty = Block. (last_block, timestamp)
+            difficulty = Block.adjust_difficulty(last_block, timestamp)
             hash = crypto_hash(timestamp, last_hash, data, difficulty, nonce)
         return Block(timestamp, last_hash, hash, data, difficulty, nonce)
 
