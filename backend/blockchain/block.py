@@ -42,6 +42,19 @@ class Block:
         if isinstance(other, self.__class__):
             return self.__dict__ == other.__dict__
         return False
+    
+    def to_json(self):
+        """
+        Serialize the block into a dictionary of its attributes
+        """
+        return self.__dict__
+
+    @staticmethod
+    def from_json(block_json):
+        """
+        Deserialize a block's json representation back int o a block instance.
+        """
+        return Block(**block_json)
         
     @staticmethod
     def mine_block(last_block, data):
