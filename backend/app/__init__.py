@@ -1,10 +1,10 @@
-from pubnub.callbacks import ReconnectionCallback
-from backend.wallet.transaction import Transaction
 import os
 import random
+from random import randint
 import requests
 
 from flask import Flask, jsonify, request
+from flask_cors import CORS
 
 from backend.blockchain.blockchain import Blockchain
 from backend.wallet.wallet import Wallet
@@ -13,6 +13,7 @@ from backend.wallet.transaction_pool import TransactionPool
 from backend.pubsub import PubSub
 
 app = Flask(__name__)
+CORS(app, resources = { r'/*' : { 'origins' : 'http://localhost:3000'}})
 blockchain = Blockchain()
 transaction_pool = TransactionPool()
 wallet = Wallet(blockchain)
@@ -25,6 +26,17 @@ def route_default():
 @app.route('/blockchain')
 def route_blockchain():
     return jsonify(blockchain.to_json())
+
+@app.rout('/blockchain/range')
+def route_blockchain_range():
+    #http://localhost:5000/blockchain/range?start={start}&end={end}
+    start = int(request.args.get('start'))
+    end = int(request.args.get('end'))
+    return jsonify(blockchain.to_json()[::-1][start:end]) #[::-1] inverses the list
+
+@app.route('/blockchain/length')
+def route_blockchain_length():
+    return jsonify(len(blockchain.chain))
 
 @app.route('/blockchain/mine')
 def route_blockchain_mine():
@@ -75,5 +87,12 @@ if os.environ.get('PEER') == 'True':
         print('\n--Successfully synchronized the local chain')
     except Exception as e:
         print(f'\n--Error synchronizing: {e}')
+
+if os.environ.get('SEED_DATA') == 'True':
+    for i in range(10):
+        blockchain.add_block([
+            Transaction(Wallet(), Wallet().address, random.randint(2, 50)).to_json(),
+            Transaction(Wallet(), Wallet().address, random.randint(2, 50)).to_json()
+        ])
 
 app.run(port = PORT)

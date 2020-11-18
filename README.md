@@ -25,3 +25,15 @@ python -m backend.app
 Make sure that the virtual environment is activated.
 set PEER=True && python -m backend.app
 """
+
+**Seed the backend with data**
+"""
+Make sure that the virtual environment is activated.
+set SEED_DATA=True && python -m backend.app
+"""
+
+**Run the frontend**
+"""
+In the frontend directory.
+npm run start
+"""
