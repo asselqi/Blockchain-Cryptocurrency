@@ -27,7 +27,7 @@ def route_default():
 def route_blockchain():
     return jsonify(blockchain.to_json())
 
-@app.rout('/blockchain/range')
+@app.route('/blockchain/range')
 def route_blockchain_range():
     #http://localhost:5000/blockchain/range?start={start}&end={end}
     start = int(request.args.get('start'))

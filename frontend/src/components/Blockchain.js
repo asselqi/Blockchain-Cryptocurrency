@@ -10,7 +10,7 @@ function Blockchain() {
   const [blockchainLength, setBlockchainLength] = useState(0);
 
   const fetchBlockchainPage = ({start, end}) => {
-    fetch(`${API_BASE_URL}/blockchain/length?start=${start}&end=${end}`)
+    fetch(`${API_BASE_URL}/blockchain/range?start=${start}&end=${end}`)
     .then(response => response.json())
     .then(json => setBlockchain(json))
   }
